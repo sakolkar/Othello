@@ -29,7 +29,7 @@ class OthelloMain:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
-                    
-if __name__ == "__main__":
+
+if __name__ == "src.main":
     MainWindow = OthelloMain()
     MainWindow.MainLoop()
