@@ -20,6 +20,8 @@ class OthelloMain:
         self.width = width
         self.height = height
         self.screen = pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption("Othello")
+        #pygame.mouse.set_visible(0)
         
     def MainLoop(self):
         """
