@@ -1,5 +1,7 @@
-import sys, pygame
+import os, sys, pygame, board
 from pygame.sprite import LayeredUpdates
+from tiles import BASE_TILE, BLK_PIECE, WHT_PIECE
+
 #
 #
 #
@@ -11,15 +13,13 @@ FONT_SIZE = 16
 FONT = pygame.font.SysFont("Arial", FONT_SIZE)
 FONT_COLOR = (0, 0, 0)
 
-BASE_TILE = "/assets/green_tile.png"
-BLK_PEICE = "/assets/black_peice.png"
-WHT_PEICE = "/assets/white_peice.png"
-
 LEFT_CLICK = 1
 RIGHT_CLICK = 0
 
 BOARD_WIDTH = 640
 BOARD_HEIGHT = 640
+
+WHITE_RGB = (255, 255, 255)
 
 class GUI(LayeredUpdates):
     """
@@ -28,7 +28,7 @@ class GUI(LayeredUpdates):
     
     num_instances = 0
     
-    def __init__(self):
+    def __init__(self, bg_color = WHITE_RGB):
         """
         
         """
@@ -39,6 +39,7 @@ class GUI(LayeredUpdates):
             raise Exception("GUI: Another instance is already running.")
         GUI.num_instances = 1
         
+        self.bg_color = bg_color
         self.screen = pygame.display.set_mode((BOARD_WIDTH, BOARD_HEIGHT))
         self.screen_rect = pygame.Rect(0, 0, BOARD_WIDTH, BOARD_HEIGHT)
         
@@ -47,7 +48,7 @@ class GUI(LayeredUpdates):
         self.num_teams = 2
         self.current_turn = 0
         self.win_team = None
-        self.map = None
+        self.board = None
         
         # the tiles on the board that can be played at
         self._playable_tiles = set()
@@ -61,15 +62,15 @@ class GUI(LayeredUpdates):
         """
         return ((self.current_turn) % self.num_teams) + 1
         
-    def load_board(self, tile_w = 80, tile_h = 80):
+    def load_board(self, tile_w = 64, tile_h = 64):
         """
         Loads the game board
         """
-        self.remove(self.map)
-        self.map = board.Board(BASE_TILE, tile_w, tile_h)
-        self.add(self.map)
+        self.remove(self.board)
+        self.board = board.Board(BASE_TILE, tile_w, tile_h)
+        self.add(self.board)
         
-        self.map.rect.center = self.screen_rect.center
+        self.board.rect.center = self.screen_rect.center
         
         # create the inital board setup
         
@@ -82,9 +83,24 @@ class GUI(LayeredUpdates):
             and event.button == LEFT_CLICK
             and pygame.mouse.get_focused()):
             
+            print(event.pos)
+            print(self.board.tile_coords(event.pos))
             
             pass
         
+    def update(self):
+        """
+        """
+        LayeredUpdates.update(self)
         
+        # update the board
+        
+    def draw(self):
+        """
+        """
+        self.screen.fill(self.bg_color)
+        LayeredUpdates.draw(self, self.screen)
+        
+        pygame.display.flip()
         
         

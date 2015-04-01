@@ -1,5 +1,5 @@
-import tiles
-
+import tiles, pygame, math
+from tiles import TileColor
 from pygame.sprite import Sprite
 
 HIGHLIGHT_RATE = 0.0025
@@ -41,8 +41,8 @@ class Board(Sprite):
                 
         self._render_base_board()
         
-        # count of black peices
-        # count of white peices
+        # count of black pieces
+        # count of white pieces
         # list of playable tiles for black
         # list of playable tiles for white
     
@@ -62,9 +62,9 @@ class Board(Sprite):
         # draw in each tile
         for i in range(self._num_rows):
             for j in range(self._num_cols):
-                self.set_tile(i, j, TileColors.Empty)
+                self.set_tile(i, j, TileColor.Empty)
                 area = pygame.Rect(0, 0, self._tile_width, self._tile_height)
-                self._base_image.blit(self._sprite, (i, j), area)
+                self._base_image.blit(self._sprite, (i*self._tile_width, j*self._tile_height), area)
             
     
     
@@ -79,7 +79,7 @@ class Board(Sprite):
                             col, row))
         
         if (col, row) not in self._tiles:
-            self._tiles[(col, row)] = Tile(color) 
+            self._tiles[(col, row)] = tiles.Tile(color) 
         
     
     # set the color of a tile
@@ -96,14 +96,14 @@ class Board(Sprite):
                             col, row))
         
         if (col, row) not in self._tiles:
-            self._tiles[(col, row)] = Tile(color) 
+            self._tiles[(col, row)] = tiles.Tile(color) 
         else:
             self._tiles[(col, row)].change_color(color)
     
     
-    # get the count of black/white peices
+    # get the count of black/white pieces
     
-    # set the count of black/white peices (indicate privacy)
+    # set the count of black/white pieces (indicate privacy)
     
     # get list of playable tiles for black/white
     

@@ -17,10 +17,10 @@ class OthelloMain:
         # initialize pygame
         pygame.init()
         pygame.display.set_caption("Othello")
-        clock = pygame.time.Clock()
-        main_gui = GUI()
+        self.clock = pygame.time.Clock()
+        self.main_gui = GUI()
         #pygame.mouse.set_visible(0)
-        main_gui.load_board()
+        self.main_gui.load_board()
         
     def MainLoop(self):
         """
@@ -33,11 +33,11 @@ class OthelloMain:
                     sys.exit()
                     
                 elif event.type == pygame.MOUSEBUTTONUP:
-                    main_gui.on_click(event)
+                    self.main_gui.on_click(event)
                 
-                main_gui.update()
-                main_gui.draw()
-                clock.tick(30) # cap at 30 fps
+                self.main_gui.update()
+                self.main_gui.draw()
+                self.clock.tick(30) # cap at 30 fps
 
 if __name__ == "main":
     MainWindow = OthelloMain()
