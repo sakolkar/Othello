@@ -1,3 +1,6 @@
+class TileColor:
+    Empty, Black, White = range(0,3)
+
 class Tile(pygame.sprite.Sprite):
     """
     
@@ -8,7 +11,9 @@ class Tile(pygame.sprite.Sprite):
         self.image, self.rect = load_image('green_tile.png', -1)
         
     def update(self):
-        pos = pygame.mouse.get_pos()
-        self.rect.midtop = pos
+        pass
+    
+    
+    
         
         

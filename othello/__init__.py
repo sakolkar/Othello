@@ -1,1 +1,6 @@
-__all__ = ['main']
+__all__ = [ 'main',
+            'tiles',
+            'helpers',
+            'board',
+            'gui'
+          ]
