@@ -37,7 +37,7 @@ class OthelloMain:
                 
                 self.main_gui.update()
                 self.main_gui.draw()
-                self.clock.tick(30) # cap at 30 fps
+                self.clock.tick(60) # cap at 30 fps
 
 if __name__ == "main":
     MainWindow = OthelloMain()

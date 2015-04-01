@@ -2,11 +2,6 @@ import tiles, pygame, math
 from tiles import TileColor
 from pygame.sprite import Sprite
 
-HIGHLIGHT_RATE = 0.0025
-GRID_COLOR = (0, 0, 0, 80)
-NUM_COLS = 8
-NUM_ROWS = 8
-
 # board datastructure that holds all the tiles
 class Board(Sprite):
     """  
@@ -18,14 +13,14 @@ class Board(Sprite):
     """
     
     # initalization
-    def __init__(self,sprite_img, tile_width, tile_height):
+    def __init__(self,sprite_img, tile_width, tile_height, num_rows, num_cols):
         """
         """
         self._sprite = pygame.image.load(sprite_img)
         self._tile_width = tile_width
         self._tile_height = tile_height
-        self._num_rows = NUM_ROWS
-        self._num_cols = NUM_COLS
+        self._num_rows = num_rows
+        self._num_cols = num_cols
         self._board_width = self._tile_width * self._num_cols
         self._board_height = self._tile_height * self._num_rows
         
@@ -64,22 +59,25 @@ class Board(Sprite):
             for j in range(self._num_cols):
                 self.set_tile(i, j, TileColor.Empty)
                 area = pygame.Rect(0, 0, self._tile_width, self._tile_height)
-                self._base_image.blit(self._sprite, (i*self._tile_width, j*self._tile_height), area)
-            
-    
+                self._base_image.blit(self._sprite, 
+                                      (j*self._tile_width, 
+                                      i*self._tile_height),
+                                      area)    
     
     # access the information of a tile
     def get_tile(self, row, col):
         """
         """
         
-        if not row in range(NUM_ROWS) and col not in range(NUM_COLS):
-            col = chr(ord('A') + col)
+        if row not in range(self._num_rows) and \
+           col not in range(self._num_cols):
             raise Exception("Attempted to access invalid tile ({},{})".format(
                             col, row))
         
         if (col, row) not in self._tiles:
-            self._tiles[(col, row)] = tiles.Tile(color) 
+            raise Exception("Tile ({},{}) not defined.".format(col, row))
+        else:
+            return self._tiles[(col, row)]
         
     
     # set the color of a tile
@@ -90,8 +88,9 @@ class Board(Sprite):
         rows are numbered in the gui
         
         """
-        if not row in range(NUM_ROWS) and col not in range(NUM_COLS):
-            col = chr(ord('A') + col)
+        if row not in range(self._num_rows) and \
+           col not in range(self._num_cols):
+            #col = chr(ord('A') + col)
             raise Exception("Attempted to access invalid tile ({},{})".format(
                             col, row))
         

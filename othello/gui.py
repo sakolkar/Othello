@@ -1,6 +1,6 @@
 import os, sys, pygame, board
 from pygame.sprite import LayeredUpdates
-from tiles import BASE_TILE, BLK_PIECE, WHT_PIECE
+from tiles import BASE_TILE, BLK_PIECE, WHT_PIECE, TileColor, TILE_W, TILE_H
 
 #
 #
@@ -16,8 +16,11 @@ FONT_COLOR = (0, 0, 0)
 LEFT_CLICK = 1
 RIGHT_CLICK = 0
 
-BOARD_WIDTH = 640
-BOARD_HEIGHT = 640
+BOARD_WIDTH = 512
+BOARD_HEIGHT = 512
+NUM_ROWS = 8
+NUM_COLS = 8
+NUM_TEAMS = 2
 
 WHITE_RGB = (255, 255, 255)
 
@@ -45,7 +48,7 @@ class GUI(LayeredUpdates):
         
         # set up team info. there are 2 sides black and white.
         # black always goes first
-        self.num_teams = 2
+        self.num_teams = NUM_TEAMS
         self.current_turn = 0
         self.win_team = None
         self.board = None
@@ -60,14 +63,14 @@ class GUI(LayeredUpdates):
         Returns: 1 - team black
                  2 - team white
         """
-        return ((self.current_turn) % self.num_teams) + 1
+        return int(((self.current_turn) % self.num_teams) + 1)
         
-    def load_board(self, tile_w = 64, tile_h = 64):
+    def load_board(self, tile_w = TILE_W, tile_h = TILE_H):
         """
         Loads the game board
         """
         self.remove(self.board)
-        self.board = board.Board(BASE_TILE, tile_w, tile_h)
+        self.board = board.Board(BASE_TILE, tile_w, tile_h, NUM_ROWS, NUM_COLS)
         self.add(self.board)
         
         self.board.rect.center = self.screen_rect.center
@@ -83,10 +86,14 @@ class GUI(LayeredUpdates):
             and event.button == LEFT_CLICK
             and pygame.mouse.get_focused()):
             
-            print(event.pos)
-            print(self.board.tile_coords(event.pos))
+            col, row = self.board.tile_coords(event.pos)
             
-            pass
+            # only register clicks on the board
+            if row not in range(NUM_ROWS) and col not in range(NUM_COLS):
+                return
+            
+            self.board.set_tile(row, col, self.cur_team)
+            self.next_turn()
         
     def update(self):
         """
@@ -101,6 +108,21 @@ class GUI(LayeredUpdates):
         self.screen.fill(self.bg_color)
         LayeredUpdates.draw(self, self.screen)
         
+        # draw the tiles
+        for i in range(NUM_ROWS):
+            for j in range(NUM_COLS):
+                area = pygame.Rect(0, 0, TILE_W, TILE_H)
+                self.screen.blit(self.board.get_tile(i,j)._sprite, 
+                                 (j*TILE_W, 
+                                 i*TILE_H),
+                                 area)
+        
         pygame.display.flip()
+        
+    def next_turn(self):
+        """
+        """
+        self.current_turn += 1
+        print("RE")
         
         
