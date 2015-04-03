@@ -2,5 +2,6 @@ __all__ = [ 'main',
             'tiles',
             'helpers',
             'board',
-            'gui'
+            'gui',
+            'best_move'
           ]
