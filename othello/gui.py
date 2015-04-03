@@ -22,6 +22,9 @@ NUM_ROWS = 8
 NUM_COLS = 8
 NUM_TEAMS = 2
 
+BOARD_TOP_PAD = int((BOARD_HEIGHT - (TILE_H * NUM_ROWS))/2)
+BOARD_LEFT_PAD = int((BOARD_WIDTH - (TILE_W * NUM_COLS))/2)
+
 WHITE_RGB = (255, 255, 255)
 
 class GUI(LayeredUpdates):
@@ -76,31 +79,41 @@ class GUI(LayeredUpdates):
         self.board.rect.center = self.screen_rect.center
         
         # create the inital board setup
+        self.board.board_setup()
         
     def on_click(self, event):
         """
         """
         
         # window has focus and button press was left click
-        if (    event.type == pygame.MOUSEBUTTONUP
+        if (event.type == pygame.MOUSEBUTTONUP
             and event.button == LEFT_CLICK
             and pygame.mouse.get_focused()):
             
             col, row = self.board.tile_coords(event.pos)
             
+            tile_clicked = self.board.get_tile(row, col)
+            
             # only register clicks on the board
             if row not in range(NUM_ROWS) and col not in range(NUM_COLS):
                 return
+                
+            # discard clicks on already used tiles
+            if tile_clicked.get_color() != TileColor.Empty:
+                return
+                
+            # discard clicks on invalid tile locations
+            if not self.board.check_move_valid(tile_clicked, self.cur_team):
+                return
             
-            self.board.set_tile(row, col, self.cur_team)
+            self.board.move(tile_clicked, self.cur_team)
+            
             self.next_turn()
         
     def update(self):
         """
         """
         LayeredUpdates.update(self)
-        
-        # update the board
         
     def draw(self):
         """
@@ -112,10 +125,13 @@ class GUI(LayeredUpdates):
         for i in range(NUM_ROWS):
             for j in range(NUM_COLS):
                 area = pygame.Rect(0, 0, TILE_W, TILE_H)
+                
                 self.screen.blit(self.board.get_tile(i,j)._sprite, 
-                                 (j*TILE_W, 
-                                 i*TILE_H),
+                                 (j*TILE_W + BOARD_LEFT_PAD, 
+                                 i*TILE_H + BOARD_TOP_PAD),
                                  area)
+                
+        # draw game over message
         
         pygame.display.flip()
         
@@ -123,6 +139,5 @@ class GUI(LayeredUpdates):
         """
         """
         self.current_turn += 1
-        print("RE")
         
         
