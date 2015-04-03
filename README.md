@@ -9,9 +9,9 @@ Satyen Akolkar
 Installing/Running
 ------------------
 
-To run the game, enter the command in the othello directory
+To run the game, enter the command in the Othello directory
 
-    $ python3 othello.py
+    $ python3 othello
     
 Gameplay
 --------
