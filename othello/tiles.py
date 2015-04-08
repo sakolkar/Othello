@@ -39,6 +39,7 @@ class Tile(pygame.sprite.Sprite):
             self._color = TileColor.White
             self._base_image.blit(pygame.image.load(WHT_PIECE), tile_rect)
             
+    @property
     def get_color(self):
         """
         """

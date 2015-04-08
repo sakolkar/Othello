@@ -2,6 +2,26 @@ import tiles, pygame, math
 from tiles import TileColor
 from pygame.sprite import Sprite
 
+UP      = (0, 1)
+UP_LEFT = (-1, 1)
+LEFT    = (-1, 0)
+DO_LEFT = (-1, -1)
+DOWN    = (0, -1)
+DO_RIGHT= (1, -1)
+RIGHT   = (1, 0)
+UP_RIGHT= (1, 1)
+
+class Direction():
+    num_directions = 8
+    directions = {0:UP, 
+                  1:UP_LEFT, 
+                  2:LEFT, 
+                  3:DO_LEFT,
+                  4:DOWN, 
+                  5:DO_RIGHT, 
+                  6:RIGHT, 
+                  7:UP_RIGHT}
+
 # board datastructure that holds all the tiles
 class Board(Sprite):
     """  
@@ -111,73 +131,86 @@ class Board(Sprite):
         
     def update_playable(self):
         """
-        """
-        pass
         
+        """
+        
+        # iterate through black tiles
+        self._blk_playable = set()
+        for tile in self._blk_tiles:
+            for d in range(Direction.num_directions):
+                i_tile = self.find_tile_in_direction(tile,
+                                                     TileColor.Empty,
+                                                     TileColor.White,
+                                                     Direction.directions[d])
+                
+                if i_tile != None:
+                    self._blk_playable.add(i_tile)        
+        
+        # iterate through white tiles
+        self._wht_playable = set()
+        for tile in self._wht_tiles:
+            for d in range(Direction.num_directions):
+                i_tile = self.find_tile_in_direction(tile,
+                                                     TileColor.Empty,
+                                                     TileColor.Black,
+                                                     Direction.directions[d])
+                
+                if i_tile is not None:
+                    self._wht_playable.add(i_tile)        
         
     def flip_tiles(self, tile, color):
         """
         """
+        flip_color = None
+        if color == TileColor.Black:
+            flip_color = TileColor.White
+        elif color == TileColor.White:
+            flip_color = TileColor.Black
         
-        # check left of the tile
-        i_tile = self.find_tile_in_direction(tile, color, -1, 0)
-        self.flip_tiles_in_direction(tile, i_tile, -1, 0, color)
+        for d in range(Direction.num_directions):
+            i_tile = self.find_tile_in_direction(tile, 
+                                                 color, 
+                                                 flip_color, 
+                                                 Direction.directions[d])
+            
+            if i_tile is not None:
+                self.flip_tiles_in_direction(tile, 
+                                             i_tile, 
+                                             Direction.directions[d], 
+                                             color)
         
-        # check right of the tile
-        i_tile = self.find_tile_in_direction(tile, color, 1, 0)
-        self.flip_tiles_in_direction(tile, i_tile, 1, 0, color)
-        
-        # check below the tile
-        i_tile = self.find_tile_in_direction(tile, color, 0, -1)
-        self.flip_tiles_in_direction(tile, i_tile, 0, -1, color)
-        
-        # check above the tile
-        i_tile = self.find_tile_in_direction(tile, color, 0, 1)
-        self.flip_tiles_in_direction(tile, i_tile, 0, 1, color)
-        
-        # check up-right diagonal
-        i_tile = self.find_tile_in_direction(tile, color, 1, 1)
-        self.flip_tiles_in_direction(tile, i_tile, 1, 1, color)
-        
-        # check up-left diagonal
-        i_tile = self.find_tile_in_direction(tile, color, -1, 1)
-        self.flip_tiles_in_direction(tile, i_tile, -1, 1, color)
-        
-        # check bot-right diagonal
-        i_tile = self.find_tile_in_direction(tile, color, 1, -1)
-        self.flip_tiles_in_direction(tile, i_tile, 1, -1, color)
-        
-        # check bot-left diagonal
-        i_tile = self.find_tile_in_direction(tile, color, -1, -1)
-        self.flip_tiles_in_direction(tile, i_tile, -1, -1, color)
-        
-    def find_tile_in_direction(self, tile, color, col_dir, row_dir):
+    def find_tile_in_direction(self, start_tile, color, ign_color,direction):
         """
         """
-        tile_col, tile_row = tile.get_coords()
+        tile_col, tile_row = start_tile.get_coords()
         tile_not_found = True
-        i_tile = tile
+        i_tile = start_tile
+        ign_tiles_passed = 0
         
         while tile_not_found:
-            tile_col += col_dir
-            tile_row += row_dir
+            tile_col += direction[0]
+            tile_row += direction[1]
             
             # make sure new row and col are in range
-            if tile_row not in range(self._num_rows) and \
+            if tile_row not in range(self._num_rows) or \
                tile_col not in range(self._num_cols):
                 break
             
             i_tile = self.get_tile(tile_row, tile_col)
-            
-            if i_tile.get_color() == TileColor.Empty:
-                break
-            elif i_tile.get_color() == color:
+            if i_tile.get_color == ign_color:
+                ign_tiles_passed += 1
+            elif i_tile.get_color == color:
                 tile_not_found = False
-                return i_tile
+                if ign_tiles_passed > 0:
+                    return i_tile
+                else:
+                    break
+            elif i_tile.get_color != ign_color:
+                break
             
-        return tile
+        return None
         
-    def flip_tiles_in_direction(self, start_tile, end_tile, col_dir, row_dir, color):
+    def flip_tiles_in_direction(self, start_tile, end_tile, direction, color):
         """
         """
         
@@ -190,8 +223,8 @@ class Board(Sprite):
         all_tiles_not_flipped = True
         
         while all_tiles_not_flipped:
-            i_col += col_dir
-            i_row += row_dir
+            i_col += direction[0]
+            i_row += direction[1]
             
             i_tile = self.get_tile(i_col, i_row)
             
@@ -203,9 +236,12 @@ class Board(Sprite):
     # access the information of a tile
     def get_tile(self, row, col):
         """
+        Find a tile on the board based on its row and column.
+        
+        Return: Tile()
         """
         
-        if row not in range(self._num_rows) and \
+        if row not in range(self._num_rows) or \
            col not in range(self._num_cols):
             raise Exception("Attempted to access invalid tile ({},{})".format(
                             col, row))
@@ -219,14 +255,16 @@ class Board(Sprite):
     # set the color of a tile
     def set_tile(self, row, col, color):
         """
+        Sets a specified tile by row and column to the
+        specified color. If the tile does not exist but is
+        in range, the tile is created.
         
-        columns are lettered in the gui
-        rows are numbered in the gui
-        
+        If the tile exists then the color of the tile is
+        changed to the one specified and the tile is moved
+        to the corresponding set of black/white tiles.
         """
-        if row not in range(self._num_rows) and \
+        if row not in range(self._num_rows) or \
            col not in range(self._num_cols):
-            #col = chr(ord('A') + col)
             raise Exception("Attempted to access invalid tile ({},{})".format(
                             col, row))
             
@@ -236,26 +274,23 @@ class Board(Sprite):
             self._tiles[(col, row)] = tiles.Tile(color, col = col, row = row) 
         else:
             tile = self.get_tile(row, col)
-            if tile.get_color() == TileColor.Black:
+            if tile.get_color == TileColor.Black:
                 self._blk_tiles.remove(tile)
-            if tile.get_color() == TileColor.White:
+            if tile.get_color == TileColor.White:
                 self._wht_tiles.remove(tile)
             tile.change_color(color)
-            
+        
+        # add the tile to the set of current black/white tiles
         if color == TileColor.Black:
-            self._blk_tiles.add(tile)
-            
+            self._blk_tiles.add(tile)  
         if color == TileColor.White:
             self._wht_tiles.add(tile)
     
-    
-    # get the count of black/white pieces
-    
-    # get list of playable tiles for black/white
-    
-    # get the tile at coordinates
     def tile_coords(self, screen_coords):
         """
+        Finds the column, row for a specified screen pos.
+        
+        return: (col, row)
         """
         x, y, = screen_coords
         return (
@@ -263,21 +298,24 @@ class Board(Sprite):
             math.floor((y - self.rect.top) / self._tile_height)
         )
         
-    def screen_coords(self, tile_coords):
-        """
-        """
-        
-        x, y, = tile_coords
-        return (
-            x * self._tile_width + self.rect.x,
-            y * self._tile_height + self.rect.y
-        )
+    #def screen_coords(self, tile_coords):
+    #    """
+    #    Calculates the screen coordinates based on a given tile.
+    #    """
+    #    
+    #    x, y, = tile_coords
+    #    return (
+    #        x * self._tile_width + self.rect.x,
+    #        y * self._tile_height + self.rect.y
+    #    )
         
     def update(self):
         """
-        
+        makes the board sprite to be a fresh copy of the
+        _base_image. This is an empty board. The appropriate
+        tiles should be drawn over this board since the
+        board can change drastically from turn to turn.
         """
-        # copy over the base image
         self.image = self._base_image.copy()
         
         
