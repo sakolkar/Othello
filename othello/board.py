@@ -91,6 +91,22 @@ class Board(Sprite):
                                       i*self._tile_height),
                                       area)    
     
+    @property
+    def num_playable_blk_tiles(self):
+        return len(self._blk_playable)
+        
+    @property
+    def num_playable_wht_tiles(self):
+        return len(self._wht_playable)
+        
+    @property
+    def num_black(self):
+        return len(self._blk_tiles)
+        
+    @property
+    def num_white(self):
+        return len(self._wht_tiles)
+    
     def board_setup(self):
         """
         """
@@ -138,7 +154,7 @@ class Board(Sprite):
         self._blk_playable = set()
         for tile in self._blk_tiles:
             for d in range(Direction.num_directions):
-                i_tile = self.find_tile_in_direction(tile,
+                i_tile, num_ign_tiles = self.find_tile_in_direction(tile,
                                                      TileColor.Empty,
                                                      TileColor.White,
                                                      Direction.directions[d])
@@ -150,7 +166,7 @@ class Board(Sprite):
         self._wht_playable = set()
         for tile in self._wht_tiles:
             for d in range(Direction.num_directions):
-                i_tile = self.find_tile_in_direction(tile,
+                i_tile, num_ign_tiles = self.find_tile_in_direction(tile,
                                                      TileColor.Empty,
                                                      TileColor.Black,
                                                      Direction.directions[d])
@@ -168,10 +184,10 @@ class Board(Sprite):
             flip_color = TileColor.Black
         
         for d in range(Direction.num_directions):
-            i_tile = self.find_tile_in_direction(tile, 
-                                                 color, 
-                                                 flip_color, 
-                                                 Direction.directions[d])
+            i_tile, num_flipped = self.find_tile_in_direction(tile, 
+                                                        color, 
+                                                        flip_color, 
+                                                        Direction.directions[d])
             
             if i_tile is not None:
                 self.flip_tiles_in_direction(tile, 
@@ -179,7 +195,7 @@ class Board(Sprite):
                                              Direction.directions[d], 
                                              color)
         
-    def find_tile_in_direction(self, start_tile, color, ign_color,direction):
+    def find_tile_in_direction(self, start_tile, color, ign_color, direction):
         """
         """
         tile_col, tile_row = start_tile.get_coords()
@@ -202,13 +218,13 @@ class Board(Sprite):
             elif i_tile.get_color == color:
                 tile_not_found = False
                 if ign_tiles_passed > 0:
-                    return i_tile
+                    return i_tile, ign_tiles_passed
                 else:
                     break
             elif i_tile.get_color != ign_color:
                 break
             
-        return None
+        return None, ign_tiles_passed
         
     def flip_tiles_in_direction(self, start_tile, end_tile, direction, color):
         """

@@ -1,4 +1,4 @@
-import os, sys, pygame, board
+import os, sys, pygame, board, best_move, time
 from pygame.sprite import LayeredUpdates
 from tiles import BASE_TILE, BLK_PIECE, WHT_PIECE, TileColor, TILE_W, TILE_H
 
@@ -21,6 +21,8 @@ BOARD_TOP_PAD = int((BOARD_HEIGHT - (TILE_H * NUM_ROWS))/2)
 BOARD_LEFT_PAD = int((BOARD_WIDTH - (TILE_W * NUM_COLS))/2)
 WHITE_RGB = (255, 255, 255)
 BLACK_RGB = (0, 0, 0)
+
+CPU_COLOR = TileColor.White
 
 class GUI(LayeredUpdates):
     """
@@ -53,6 +55,7 @@ class GUI(LayeredUpdates):
         self.current_turn = START_TURN
         self.win_team = None
         self.board = None
+        self.endgame_text_box = None
         
     @property
     def cur_team(self):
@@ -113,8 +116,18 @@ class GUI(LayeredUpdates):
                 return
             
             self.board.move(tile_clicked, self.cur_team)
+            self.update()
+            self.draw()
             
             self.next_turn()
+            
+            if self.cur_team == CPU_COLOR:
+                time.sleep(1)
+                cpu_move = best_move.find_best_move(self.board, self.cur_team)
+                if cpu_move != None:
+                    self.board.move(cpu_move, self.cur_team)
+                self.next_turn()
+                
         
     def update(self):
         """
@@ -140,6 +153,10 @@ class GUI(LayeredUpdates):
                                  i*TILE_H + BOARD_TOP_PAD),
                                  area)
                 
+        # end game
+        if self.endgame_text_box != None:
+            self.screen.blit(self.endgame_text_box, self.screen_rect.center)
+                
         # update the full contents of the screen
         pygame.display.flip()
         
@@ -149,7 +166,40 @@ class GUI(LayeredUpdates):
         Note: next_turn() should be called even if there
               are no valid moves for the player. Such a
               turn is a "pass" but a turn nonetheless.
-        """
+        """       
         self.current_turn += 1
         
         
+        self.check_valid_moves_exist()
+        
+        
+    def check_valid_moves_exist(self):
+        
+        if self.cur_team == TileColor.Black and \
+            self.board.num_playable_blk_tiles == 0:
+                
+            if self.board.num_playable_wht_tiles == 0:
+                self.calculate_winning_team()
+            else:
+                self.current_turn += 1
+            
+        if self.cur_team == TileColor.White and \
+            self.board.num_playable_wht_tiles == 0:
+                
+            if self.board.num_playable_blk_tiles == 0:
+                self.calculate_winning_team()
+            else:
+                self.current_turn += 1
+                
+    def calculate_winning_team(self):
+        if self.board.num_black > self.board.num_white:
+            self.winning_team = TileColor.Black
+        elif self.board.num_white > self.board.num_black:
+            self.winning_team = TileColor.White
+        else:
+            self.winning_team = TileColor.Empty
+            
+    def draw_endgame(self):
+        self.endgame_text_box = FONT.render("Game Over!", 1, BLACK_RGB)
+        self.update()
+        self.draw()
