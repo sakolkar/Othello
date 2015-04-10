@@ -1,4 +1,4 @@
-import os, sys, pygame, board, best_move, time
+import pygame, board, best_move, time
 from pygame.sprite import LayeredUpdates
 from tiles import BASE_TILE, BLK_PIECE, WHT_PIECE, TileColor, TILE_W, TILE_H
 
