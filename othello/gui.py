@@ -20,7 +20,7 @@ START_TURN = 0
 BOARD_TOP_PAD = int((BOARD_HEIGHT - (TILE_H * NUM_ROWS))/2)
 BOARD_LEFT_PAD = int((BOARD_WIDTH - (TILE_W * NUM_COLS))/2)
 WHITE_RGB = (255, 255, 255)
-BLACK_RGB = (0, 0, 0)
+BLACK_RGBA = (0, 0, 0, 50)
 
 CPU_COLOR = TileColor.White
 
@@ -55,7 +55,6 @@ class GUI(LayeredUpdates):
         self.current_turn = START_TURN
         self.win_team = None
         self.board = None
-        self.endgame_text_box = None
         
     @property
     def cur_team(self):
@@ -121,6 +120,7 @@ class GUI(LayeredUpdates):
             
             self.next_turn()
             
+            # play the computer's turn
             if self.cur_team == CPU_COLOR:
                 time.sleep(1)
                 cpu_move = best_move.find_best_move(self.board, self.cur_team)
@@ -153,10 +153,6 @@ class GUI(LayeredUpdates):
                                  i*TILE_H + BOARD_TOP_PAD),
                                  area)
                 
-        # end game
-        if self.endgame_text_box != None:
-            self.screen.blit(self.endgame_text_box, self.screen_rect.center)
-                
         # update the full contents of the screen
         pygame.display.flip()
         
@@ -168,13 +164,19 @@ class GUI(LayeredUpdates):
               turn is a "pass" but a turn nonetheless.
         """       
         self.current_turn += 1
-        
-        
+        # see if the new team has valid moves        
         self.check_valid_moves_exist()
         
         
     def check_valid_moves_exist(self):
-        
+        """
+        determines if the current team has any valid moves.
+        if there are no valid moves, it will check if the
+        opposing team has valid moves. If the opposing team
+        does have valid moves it registers a "pass" for the
+        current team. Otherwise it will register an endgame
+        by setting a winning team.
+        """
         if self.cur_team == TileColor.Black and \
             self.board.num_playable_blk_tiles == 0:
                 
@@ -184,7 +186,7 @@ class GUI(LayeredUpdates):
                 self.current_turn += 1
             
         if self.cur_team == TileColor.White and \
-            self.board.num_playable_wht_tiles == 0:
+            self.board.num_playable_wht_tiles == 0:     
                 
             if self.board.num_playable_blk_tiles == 0:
                 self.calculate_winning_team()
@@ -192,14 +194,27 @@ class GUI(LayeredUpdates):
                 self.current_turn += 1
                 
     def calculate_winning_team(self):
+        """
+        sets the winning team by setting the teams color in
+        self.win_team.
+        If the game is tied then the "empty" color will be
+        set in win_team.
+        """
         if self.board.num_black > self.board.num_white:
-            self.winning_team = TileColor.Black
+            self.win_team = TileColor.Black
         elif self.board.num_white > self.board.num_black:
-            self.winning_team = TileColor.White
+            self.win_team = TileColor.White
         else:
-            self.winning_team = TileColor.Empty
+            self.win_team = TileColor.Empty
             
     def draw_endgame(self):
-        self.endgame_text_box = FONT.render("Game Over!", 1, BLACK_RGB)
-        self.update()
-        self.draw()
+        """
+        draws the endgame screen. displays the team that
+        won.
+        """
+        pass
+        #self.screen.fill(BLACK_RGBA)
+        #self.endgame_text = FONT.render("Game Over!", 1, WHITE_RGB)
+        #self.endgame_text.rect.center = self.screen_rect.center        
+        #self.screen.blit(self.endgame_text)
+        #pygame.display.flip()

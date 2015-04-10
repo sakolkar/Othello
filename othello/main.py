@@ -44,12 +44,11 @@ class OthelloMain:
                 elif event.type == pygame.MOUSEBUTTONUP:
                     self.main_gui.on_click(event)
                 
-                self.main_gui.update()
-                self.main_gui.draw()
-                
+            self.main_gui.update()
+            self.main_gui.draw()
+            
             if self.main_gui.win_team != None:
                 self.main_gui.draw_endgame()
-                return        
                 
             self.clock.tick(MAX_FPS)
 
