@@ -42,6 +42,8 @@ class Tile(pygame.sprite.Sprite):
         """
         tile_rect = pygame.Rect(0,0,TILE_W, TILE_H)
         
+        # overlay the empty tile base sprite image with the
+        # appropriate color tile from assests directory
         if color == TileColor.Black:
             self._color = TileColor.Black
             self._base_image.blit(pygame.image.load(BLK_PIECE), tile_rect)
