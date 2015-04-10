@@ -1,4 +1,4 @@
-import board, tiles
+import sys, board, tiles
 from tiles import TileColor
 from board import Direction
 
@@ -7,7 +7,12 @@ CORNER_COORDS = {(0,0), (0,7), (7,0), (7,0)}
 BREAK_EARLY = float("inf")
 NEG_INFINITY = -1*float("inf")
 
-def find_best_move(board, color, diff = 0):
+if sys.argv[1]:
+    DIFFICULTY = int(float(sys.argv[1]))
+else:
+    DIFFICULTY = 5
+
+def find_best_move(board, color, diff = DIFFICULTY):
     """
     Finds the best tile for a team to move at in the turn.
     Depending upon the difficulty it will recursively call
@@ -24,7 +29,7 @@ def find_best_move(board, color, diff = 0):
     Returns:
         tile - the tile at which the current team should
                play for the best move.
-    """
+    """    
     tile = None
     cont = True
     score = 0

@@ -52,7 +52,7 @@ class OthelloMain:
                 
             self.clock.tick(MAX_FPS)
 
-if __name__ == "main":
+if __name__ == "main":    
     # initalize the game window
     MainWindow = OthelloMain()
     
