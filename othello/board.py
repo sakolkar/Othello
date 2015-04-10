@@ -125,6 +125,18 @@ class Board(Sprite):
         the number of white tiles currently on the board
         """
         return len(self._wht_tiles)
+        
+    def get_playable_black_tiles(self):
+        """
+        Returns a set of tiles where black can play
+        """
+        return self._blk_playable
+        
+    def get_playable_white_tiles(self):
+        """
+        Returns a set of tiles where white can play
+        """
+        return self._wht_playable
     
     def board_setup(self):
         """

@@ -122,10 +122,11 @@ class GUI(LayeredUpdates):
             
             # play the computer's turn
             if self.cur_team == CPU_COLOR:
-                time.sleep(1)
-                cpu_move = best_move.find_best_move(self.board, self.cur_team)
-                if cpu_move != None:
-                    self.board.move(cpu_move, self.cur_team)
+                #time.sleep(1)
+                c_move, n_flip = best_move.find_best_move(self.board, 
+                                                          self.cur_team)
+                if c_move != None:
+                    self.board.move(c_move, self.cur_team)
                 self.next_turn()
                 
         
