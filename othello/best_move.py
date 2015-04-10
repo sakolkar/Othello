@@ -7,7 +7,7 @@ CORNER_COORDS = {(0,0), (0,7), (7,0), (7,0)}
 BREAK_EARLY = float("inf")
 NEG_INFINITY = -1*float("inf")
 
-def find_best_move(board, color, diff = 6):
+def find_best_move(board, color, diff = 0):
     """
     Finds the best tile for a team to move at in the turn.
     Depending upon the difficulty it will recursively call

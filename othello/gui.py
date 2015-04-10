@@ -4,8 +4,8 @@ from tiles import BASE_TILE, BLK_PIECE, WHT_PIECE, TileColor, TILE_W, TILE_H
 
 # Initialize the font
 pygame.font.init()
-FONT_SIZE = 16
-FONT = pygame.font.SysFont("Arial", FONT_SIZE)
+FONT_SIZE = 40
+FONT = pygame.font.SysFont("Arial", FONT_SIZE, bold=True)
 FONT_COLOR = (0, 0, 0)
 
 # define gui constants
@@ -20,7 +20,8 @@ START_TURN = 0
 BOARD_TOP_PAD = int((BOARD_HEIGHT - (TILE_H * NUM_ROWS))/2)
 BOARD_LEFT_PAD = int((BOARD_WIDTH - (TILE_W * NUM_COLS))/2)
 WHITE_RGB = (255, 255, 255)
-BLACK_RGBA = (0, 0, 0, 50)
+BLACK_RGB = (0, 0, 0)
+SEMI_TRANSPARENT = 128
 
 CPU_COLOR = TileColor.White
 
@@ -140,7 +141,7 @@ class GUI(LayeredUpdates):
     def draw(self):
         """
         handles drawing the sprites onto the game window
-        """
+        """        
         self.screen.fill(self.bg_color)
         LayeredUpdates.draw(self, self.screen)
         
@@ -153,9 +154,10 @@ class GUI(LayeredUpdates):
                                  (j*TILE_W + BOARD_LEFT_PAD, 
                                  i*TILE_H + BOARD_TOP_PAD),
                                  area)
-                
-        # update the full contents of the screen
-        pygame.display.flip()
+            
+        if self.win_team == None:
+            # update the full contents of the screen
+            pygame.display.flip()
         
     def next_turn(self):
         """
@@ -213,9 +215,28 @@ class GUI(LayeredUpdates):
         draws the endgame screen. displays the team that
         won.
         """
-        pass
-        #self.screen.fill(BLACK_RGBA)
-        #self.endgame_text = FONT.render("Game Over!", 1, WHITE_RGB)
-        #self.endgame_text.rect.center = self.screen_rect.center        
-        #self.screen.blit(self.endgame_text)
-        #pygame.display.flip()
+        endgame_rect = self.screen_rect
+        width = self.screen.get_width()
+        height = self.screen.get_height()
+        endgame_overlay = pygame.Surface((width, height))
+        endgame_overlay.fill(BLACK_RGB)
+        endgame_overlay.set_alpha(SEMI_TRANSPARENT)
+        self.screen.blit(endgame_overlay, (0,0))
+        
+        gameover_text_surf = FONT.render("Game Over!", 1, WHITE_RGB)
+        gover_w = gameover_text_surf.get_width()
+        text_h = 0
+        self.screen.blit(gameover_text_surf, ((width/2 - gover_w/2), text_h))
+        text_h += gameover_text_surf.get_height()
+        
+        if self.win_team == TileColor.Empty:
+            endgame_string = "TIED!"
+        elif self.win_team == TileColor.Black:
+            endgame_string = "BLACK WINS!"
+        elif self.win_team == TileColor.White:
+            endgame_string = "WHITE WINS!"
+        winteam_text_surf = FONT.render(endgame_string, 1, WHITE_RGB)
+        wteam_w = winteam_text_surf.get_width()
+        self.screen.blit(winteam_text_surf, ((width/2 - wteam_w/2),text_h))
+        
+        pygame.display.flip()
