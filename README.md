@@ -42,6 +42,22 @@ quite time intensive very quickly. The reccommended difficulty is 6 where the
 game remains challenging but not too time consuming by waiting on the computer
 for extremely long.
 
+How to Play
+-----------
+1. You are team black and make the first move.
+2. Click on an empty tile where you MUST flip at least one white tile
+3. Wait for the computer to respond with its move.
+4. Repeat steps 2&3 until no team has any valid moves or the board is
+   filled.
+5. If you cannot make any valid moves (you cannot flip at least one white
+   tile) your turn will be "passed."
+6. If you are playing at high difficulty (>=6) be patient with the computer
+   as it will take time to think about its move, much like you would think
+   about yours.
+7. If you feel that the computer should've played a move but hasn't the
+   most likely possibility that occured is that there were no valid moves
+   for the computer, so it "passed" its turn.
+
 The GUI
 -------
 
