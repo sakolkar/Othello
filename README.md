@@ -36,7 +36,11 @@ person with the most pieces is declared the winner, and they celebrate.
 
 The A.I. plans the best move based on an algorithim that judges the best move
 for how many pieces it flips, and will let it flip in the future, as well as a
-bonus for playing in the corner.
+bonus for playing in the corner. The runtime for this algorithm is O(64^n) where
+n is the difficulty chosen. As you can see this means that the algorithm becomes
+quite time intensive very quickly. The reccommended difficulty is 6 where the
+game remains challenging but not too time consuming by waiting on the computer
+for extremely long.
 
 The GUI
 -------
