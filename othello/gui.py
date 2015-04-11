@@ -123,7 +123,8 @@ class GUI(LayeredUpdates):
             
             # play the computer's turn
             if self.cur_team == CPU_COLOR:
-                #time.sleep(1)
+                if best_move.DIFFICULTY < 6:
+                    time.sleep(1)
                 c_move, n_flip = best_move.find_best_move(self.board, 
                                                           self.cur_team)
                 if c_move != None:
@@ -145,7 +146,7 @@ class GUI(LayeredUpdates):
         self.screen.fill(self.bg_color)
         LayeredUpdates.draw(self, self.screen)
         
-        # draw the tiles onto the board sprite
+       # draw the tiles onto the board sprite
         for i in range(NUM_ROWS):
             for j in range(NUM_COLS):
                 area = pygame.Rect(0, 0, TILE_W, TILE_H)

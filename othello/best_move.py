@@ -7,10 +7,14 @@ CORNER_COORDS = {(0,0), (0,7), (7,0), (7,0)}
 BREAK_EARLY = float("inf")
 NEG_INFINITY = -1*float("inf")
 
-if sys.argv[1]:
-    DIFFICULTY = int(float(sys.argv[1]))
-else:
-    DIFFICULTY = 5
+try:
+    if sys.argv[1]:
+        DIFFICULTY = int(float(sys.argv[1]))
+except:
+    DIFFICULTY = 6
+    
+if DIFFICULTY > 10:
+    DIFFUICULTY = 10
 
 def find_best_move(board, color, diff = DIFFICULTY):
     """
@@ -38,8 +42,6 @@ def find_best_move(board, color, diff = DIFFICULTY):
     
     if diff == 0:
         BREAK_EARLY = float("inf")
-    elif diff >= 10:
-        BREAK_EARLY = 5
     else:
         BREAK_EARLY = 100/diff
     
