@@ -2,7 +2,7 @@
 
 ### CMPUT 275 Wednesday Friday
 #### Final Project
-> Justin Aardema
+> Justin Aardema  
 > Satyen Akolkar
 
 Installing/Running
