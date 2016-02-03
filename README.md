@@ -5,24 +5,22 @@
 > Justin Aardema  
 > Satyen Akolkar
 
-Installing/Running
-------------------
-
-To run the game, enter the command in the Othello directory:
-(the Othello directory contains /assests /othello and README.md)
-
+### Installing/Running
+> To run the game, enter the command in the Othello directory:
+> (the Othello directory contains /assests /othello and README.md)
+    ```
     /Othello$ python3 othello difficulty
-    
-where difficulty is an integer. For smooth running of the
-program. It is reccommended to run at a difficulty less than
-or equal to 6.Here is an example of running the game at a
-difficulty of 4:
+    ```
+> where difficulty is an integer. For smooth running of the
+> program. It is reccommended to run at a difficulty less than
+> or equal to 6.Here is an example of running the game at a
+> difficulty of 4:
+    ```
+    % python3 othello 4
+    ```
 
-    /Othello$ python3 othello 4
-    
-Gameplay
---------
- 
+### Gameplay
+
 The game starts in the classic Othello set up, a square in the
 middle of the board, with two black pieces corner to corner, and 
 two white pieces also corner to corner. The player goes first, and 
