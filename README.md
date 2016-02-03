@@ -1,10 +1,9 @@
-Othello
-=======
+# Othello
 
-CMPUT 275 Wednesday Friday
-Final Project
-Justin Aardema
-Satyen Akolkar
+### CMPUT 275 Wednesday Friday
+#### Final Project
+> Justin Aardema
+> Satyen Akolkar
 
 Installing/Running
 ------------------
