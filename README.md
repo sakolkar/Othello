@@ -10,7 +10,7 @@
 > (the Othello directory contains /assests /othello and README.md)  
     ```
     /Othello$ python3 othello difficulty
-    ```
+    ```  
 > where difficulty is an integer. For smooth running of the
 > program. It is reccommended to run at a difficulty less than
 > or equal to 6.Here is an example of running the game at a
@@ -39,8 +39,7 @@
 > where the game remains challenging but not too time consuming by waiting on 
 > the computer for extremely long.
 
-How to Play
------------
+### How to Play
 1. You are team black and make the first move.
 2. Click on an empty tile where you MUST flip at least one white tile
 3. Wait for the computer to respond with its move.
@@ -55,13 +54,10 @@ How to Play
    most likely possibility that occured is that there were no valid moves
    for the computer, so it "passed" its turn.
 
-The GUI
--------
-
+### The GUI
 It shows you the game, and tells you who won at the end.
 
-Credits
--------
-
+### Credits
 credit to the gui file from assignment two for helping us to create our own gui.
-http://stackoverflow.com/questions/510348/how-can-i-make-a-time-delay-in-python for the delay in the program
+http://stackoverflow.com/questions/510348/how-can-i-make-a-time-delay-in-python
+ for the delay in the program
